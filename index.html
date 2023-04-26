@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Strong Log</title>
+    </head>
+    
+    <body>
+        <h1>Strong Log</h1>
+
+        <div id="select_exercise">
+            <label>Please select one or more exercises (select more than one for a superset or giant set):
+                <select id="exercises" name="exercise" multiple size="8">
+                    <option value="deadlift">Deadlift</option>
+                    <option value="dbpress">DB Press</option>
+                    <option value="press">Press</option>
+                    <option value="frontsquat">Front Squat</option>
+                    <option value="pullups">Pull Ups</option>
+                    <option value="pushups">Push Ups</option>
+                    <option value="bwrows">Bodyweight Rows</option>
+                    <option value="dbrows">DB Rows</option>
+                </select>
+            </label>
+            <button id="begin_exercise">Begin Exercise</button>
+
+        </div>
+
+        <div id="exercising">
+        </div>
+
+        <div id="current_record">
+        </div>
+        
+        <button id="end_workout" disabled="true">End Workout</button>
+
+        <script src="main.js"></script>            
+    </body>
+</html>
