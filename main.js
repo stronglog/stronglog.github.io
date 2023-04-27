@@ -142,6 +142,8 @@ function getAccessToken(code, scope, key) {
 function uploadFile(responseJSON, key) {
     var workoutString = localStorage.getItem(key);
     var description = createDescription(workoutString);
+    let today = new Date();
+    let dateTimeString = today.toISOString();
     
     console.log(responseJSON);
     var responseObj = JSON.parse(responseJSON);
@@ -152,7 +154,7 @@ function uploadFile(responseJSON, key) {
     data.append("sport_type", "WeightTraining");
     data.append("name", "Strong Log Workout");
     data.append("description", description);
-    data.append("start_date_local", Date.now().toISOString());
+    data.append("start_date_local", dateTimeString);
     data.append("elapsed_time", 3600);
     data.append("trainer", "0");
     data.append("commute", "0");
