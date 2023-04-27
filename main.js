@@ -1,3 +1,24 @@
+//check if we are mid-strava upload each time the page is loaded
+document.addEventListener("DOMContentLoaded", function() {
+    console.log("DOMContentLoaded");
+    var urlString = window.location;
+    var urlParameters = (new URL(urlString)).searchParams;
+    var code = urlParameters.get('code');
+    var scope = urlParameters.get('scope');
+    var err = urlParameters.get('error');
+    var state = urlParameters.get('state');
+    
+    console.log(code);
+    console.log(scope);
+    console.log(state);
+    
+    if (code != null && scope != null) {
+        getAccessToken(code, scope, state);
+    }
+});
+
+
+
 var workout = [];
 var selectExerciseDiv = document.getElementById("select_exercise");
 
@@ -26,10 +47,69 @@ function startExercise() {
     }
 }
 
-function endWorkout(workout) {
+function endWorkout() {
+    console.log(workout);
     var workoutString = JSON.stringify(workout);
     console.log(workoutString);
     stravaUpload(workoutString);
+}
+
+function createDescription(workoutString) {
+    var workout = JSON.parse(workoutString);
+    console.log(workout);
+    var description = "";
+    var exercise = "";
+    var exerciseList = {};
+    for (i=0; i<workout.length; i++) {
+        exercise = workout[i].Exercise;
+        if (exercise in exerciseList) {
+            //add set
+            var j = exerciseList[exercise].length;
+            exerciseList[exercise][j] = {
+                    Reps: workout[i].Reps,
+                    Weight: workout[i].Weight
+                };
+
+            
+        } else {
+            //add exercise            
+            console.log(exercise);
+            exerciseList[exercise] = [];
+
+            //add set
+            var j = exerciseList[exercise].length;
+            exerciseList[exercise][j] = {
+                    Reps: workout[i].Reps,
+                    Weight: workout[i].Weight
+                };
+        }
+        console.log(exerciseList);
+    }
+    let keys = Object.keys(exerciseList);
+
+    for (i=0; i<keys.length; i++) {
+        description = description+keys[i]+"\n";
+
+        for  (j=0; j<exerciseList[keys[i]].length; j++) {
+            let currentExercise = exerciseList[keys[i]];
+            if (currentExercise[j].Reps > 1) {
+                if (currentExercise[j].Weight) {
+                    description = description + " Set " + (j+1) + ": " + currentExercise[j].Reps + " Reps at "+ currentExercise[j].Weight + "kg"+"\n";                                    
+                } else {
+                    description = description + " Set " + (j+1) + ": " + currentExercise[j].Reps + " Reps" + "\n";                                    
+                }
+
+            } else {
+                if (currentExercise[j].Weight) {
+                    description = description + " Set " + (j+1) + ": " + currentExercise[j].Reps + " Rep at "+ currentExercise[j].Weight + "kg"+"\n";                                    
+                } else {
+                    description = description + " Set " + (j+1) + ": " + currentExercise[j].Reps + " Rep" + "\n";                                    
+                }
+            }
+        }
+    }
+    console.log(description);
+    return description;
 }
 
 function stravaUpload(workoutString) {
@@ -38,6 +118,50 @@ function stravaUpload(workoutString) {
     console.log("redirect to strava oauth login");
     window.location.href = "https://www.strava.com/oauth/authorize?client_id=37683&response_type=code&redirect_uri=https://intervalplayer.com&approval_prompt=force&scope=activity:write&state="+key;
 }
+
+
+function getAccessToken(code, scope, key) {
+    console.log(code);
+    console.log(scope);
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "https://www.strava.com/oauth/token?", true);
+    var data = {
+        "client_id":"37683",
+        "client_secret":"68670894f9fb4523eca81114bf9b2e3b303da3c0",
+        "code":code,
+        "grant_type":"authorization_code"
+    }
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.addEventListener('load', function(event) {
+        console.log(xhr.responseText);
+        uploadFile(xhr.responseText, key);
+    });
+    xhr.send(JSON.stringify(data));
+}
+
+function uploadFile(responseJSON, key) {
+    var workoutString = localStorage.getItem(key);
+    var description = createDescription(workoutString);
+    
+    console.log(responseJSON);
+    var responseObj = JSON.parse(responseJSON);
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "https://www.strava.com/api/v3/activities", true);
+    xhr.setRequestHeader("Authorization", "Bearer "+responseObj.access_token);
+    var data = new FormData();
+    data.append("sport_type", "WeightTraining");
+    data.append("name", "Strong Log Workout");
+    data.append("description", description);
+    data.append("start_date_local", Date.now().toISOString());
+    data.append("elapsed_time", 3600);
+    data.append("trainer", "0");
+    data.append("commute", "0");
+    xhr.addEventListener('load', function(event) {
+        console.log(xhr.responseText);
+    });
+    xhr.send(data);
+}
+
 
 function displayRecord() {
     let recordDiv = document.getElementById("current_record");
