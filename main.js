@@ -116,7 +116,7 @@ function stravaUpload(workoutString) {
     var key = Date.now();
     localStorage.setItem(key, workoutString);
     console.log("redirect to strava oauth login");
-    window.location.href = "https://www.strava.com/oauth/authorize?client_id=37683&response_type=code&redirect_uri=https://intervalplayer.com&approval_prompt=force&scope=activity:write&state="+key;
+    window.location.href = "https://www.strava.com/oauth/authorize?client_id=37683&response_type=code&redirect_uri=https://stronglog.github.io/&approval_prompt=force&scope=activity:write&state="+key;
 }
 
 
