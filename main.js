@@ -17,6 +17,39 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
+function createLocalTime() {
+    //required format is 2013-10-20T19:20:30+01:00;
+    let t = new Date();
+    let z = t.getTimezoneOffset() * 60 * 1000;
+    let tLocal = t-z
+    tLocal = new Date(tLocal);
+    let iso = tLocal.toISOString();
+    iso = iso.split(".")[0]
+ 
+    console.log(t.getTimezoneOffset()/60);
+
+    let timeDifference = toHoursMinutes(t.getTimezoneOffset());
+    
+    console.log(iso);
+    return iso+timeDifference;
+}
+
+function toHoursMinutes(totalMinutes) {
+    absMinutes = Math.abs(totalMinutes);
+    let minutes = absMinutes % 60;
+    let hours = Math.floor(absMinutes / 60);
+    hours = hours.toString().padStart(2, "0");
+    minutes = minutes.toString().padStart(2,"0");
+    
+    let timeString = hours+":"+minutes
+    //if negative offset prepend a +, if positive offset prepend a -
+    if (totalMinutes>0) {
+        timeString = "-"+timeString
+    } else {
+        timeString = "+"+timeString;
+    }
+    console.log(timeString);
+}
 
 
 var workout = [];
@@ -57,6 +90,7 @@ function endWorkout() {
 function createDescription(workoutString) {
     var workout = JSON.parse(workoutString);
     console.log(workout);
+    let cumulativeWeight = 0;
     var description = "";
     var exercise = "";
     var exerciseList = {};
@@ -95,6 +129,7 @@ function createDescription(workoutString) {
             if (currentExercise[j].Reps > 1) {
                 if (currentExercise[j].Weight) {
                     description = description + " Set " + (j+1) + ": " + currentExercise[j].Reps + " Reps at "+ currentExercise[j].Weight + "kg"+"\n";                                    
+                    cumulativeWeight = cumulativeWeight + (currentExercise[j].Reps * currentExercise[j].Weight);
                 } else {
                     description = description + " Set " + (j+1) + ": " + currentExercise[j].Reps + " Reps" + "\n";                                    
                 }
@@ -102,11 +137,15 @@ function createDescription(workoutString) {
             } else {
                 if (currentExercise[j].Weight) {
                     description = description + " Set " + (j+1) + ": " + currentExercise[j].Reps + " Rep at "+ currentExercise[j].Weight + "kg"+"\n";                                    
+                    cumulativeWeight = cumulativeWeight + (currentExercise[j].Reps * currentExercise[j].Weight);
                 } else {
                     description = description + " Set " + (j+1) + ": " + currentExercise[j].Reps + " Rep" + "\n";                                    
                 }
             }
         }
+    }
+    if (cumulativeWeight > 0) {
+        description = description + "Total weight lifted: " + cumulativeWeight + "kg";
     }
     console.log(description);
     return description;
@@ -142,9 +181,8 @@ function getAccessToken(code, scope, key) {
 function uploadFile(responseJSON, key) {
     var workoutString = localStorage.getItem(key);
     var description = createDescription(workoutString);
-    let today = new Date();
-    let dateTimeString = today.toISOString();
-    
+    let dateTimeString = createLocalTime();
+       
     console.log(responseJSON);
     var responseObj = JSON.parse(responseJSON);
     var xhr = new XMLHttpRequest();
