@@ -199,6 +199,10 @@ function uploadFile(responseJSON, key) {
     xhr.addEventListener('load', function(event) {
         console.log(xhr.status);
         console.log(xhr.responseText);
+        if(xhr.status === 201) {
+            alert("Strava Upload Successful");
+            window.location.replace("https://stronglog.github.io");
+        }
     });
     xhr.send(data);
 }
