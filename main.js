@@ -197,6 +197,7 @@ function uploadFile(responseJSON, key) {
     data.append("trainer", "0");
     data.append("commute", "0");
     xhr.addEventListener('load', function(event) {
+        console.log(xhr.status);
         console.log(xhr.responseText);
     });
     xhr.send(data);
