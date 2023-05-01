@@ -8,33 +8,50 @@
     </head>
     
     <body>
-        <h1>Strong Log</h1>
+        <div id="homescreen">
+            <h1>Strong Log</h1>
+    
+            <div id="select_exercise">
+                <label>Please select one or more exercises (select more than one for a superset or giant set):
+                    <select id="exercises" name="exercise" multiple size="8">
+                        <option value="deadlift">Deadlift</option>
+                        <option value="dbpress">DB Press</option>
+                        <option value="press">Press</option>
+                        <option value="frontsquat">Front Squat</option>
+                        <option value="pullups">Pull Ups</option>
+                        <option value="pushups">Push Ups</option>
+                        <option value="bwrows">Bodyweight Rows</option>
+                        <option value="dbrows">DB Rows</option>
+                    </select>
+                </label>
 
-        <div id="select_exercise">
-            <label>Please select one or more exercises (select more than one for a superset or giant set):
-                <select id="exercises" name="exercise" multiple size="8">
-                    <option value="deadlift">Deadlift</option>
-                    <option value="dbpress">DB Press</option>
-                    <option value="press">Press</option>
-                    <option value="frontsquat">Front Squat</option>
-                    <option value="pullups">Pull Ups</option>
-                    <option value="pushups">Push Ups</option>
-                    <option value="bwrows">Bodyweight Rows</option>
-                    <option value="dbrows">DB Rows</option>
-                </select>
-            </label>
-            <button id="begin_exercise">Begin Exercise</button>
+                <button id="begin_exercise">Begin Exercise</button>
+                <button id="end_workout" disabled="true">End Workout</button>
 
+            </div>
         </div>
 
-        <div id="exercising">
-        </div>
-
-        <div id="current_record">
+        <div id="exercise_screen">
+            
+            <div id="exercise_details">
+            </div>
+    
         </div>
         
-        <button id="end_workout" disabled="true">End Workout</button>
+        
+        <div id="upload_screen">
+            <h2>Strava Upload</h2>
+            <label for="workout_title">Title:🖉</label>
+            <input type="text" id="workout_title" name="workout_title" required size="33">
 
+            <label for="workout_description">Description:🖉</label>
+            <textarea type="text" id="workout_description" name="workout_description" required rows="10" cols="33"></textarea>
+  
+            <button id="cancel">Cancel</button>
+            <button id="upload">Upload</button>
+
+        </div>
+        
         <script src="main.js"></script>            
     </body>
 </html>

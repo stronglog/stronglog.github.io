@@ -61,6 +61,9 @@ endWorkoutButton.addEventListener("click", endWorkout);
 let beginExercise = document.getElementById("begin_exercise");
 beginExercise.addEventListener("click", startExercise);
 
+let stravaUploadDiv = document.getElementById("upload_screen");
+stravaUploadDiv.style.display = 'none';
+
 function startExercise() {
     let selection = document.getElementById("exercises");
     let collection = selection.selectedOptions;
@@ -75,6 +78,12 @@ function startExercise() {
         endWorkoutButton.style.display = 'none';
         createExerciseScreen(selectedExercises);
 
+        if (workout.length > 0) {
+            let exercisingDiv = document.getElementById("exercise_details");
+            let recordDiv = createRecord(workout);
+            exercisingDiv.appendChild(recordDiv);
+        }
+
     } else {
         alert("Please select at least one exercise");
     }
@@ -86,6 +95,9 @@ function endWorkout() {
     console.log(workoutString);
     stravaUpload(workoutString);
 }
+
+
+
 
 function createDescription(workoutString) {
     var workout = JSON.parse(workoutString);
@@ -145,8 +157,9 @@ function createDescription(workoutString) {
         }
     }
     if (cumulativeWeight > 0) {
-        description = description + "Total weight lifted: " + cumulativeWeight + "kg";
+        description = "Total weight lifted: " + cumulativeWeight + "kg \n" + description;
     }
+    description = description + "\nFree online workout log: https://stronglog.github.io/"
     console.log(description);
     return description;
 }
@@ -173,43 +186,100 @@ function getAccessToken(code, scope, key) {
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.addEventListener('load', function(event) {
         console.log(xhr.responseText);
-        uploadFile(xhr.responseText, key);
+        editTitleDescription(xhr.responseText, key);
     });
     xhr.send(JSON.stringify(data));
 }
 
-function uploadFile(responseJSON, key) {
+function editTitleDescription(responseJSON, key) {
+    stravaUploadDiv.style.display = 'inline-block';
+    selectExerciseDiv.style.display = 'none';
+    endWorkoutButton.style.display = 'none';
+    
+    let workoutTitle = document.getElementById("workout_title");
+    let workoutDescription = document.getElementById("workout_description");
+    let currentDateTime = new Date();
+
     var workoutString = localStorage.getItem(key);
     var description = createDescription(workoutString);
-    let dateTimeString = createLocalTime();
-       
-    console.log(responseJSON);
-    var responseObj = JSON.parse(responseJSON);
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "https://www.strava.com/api/v3/activities", true);
-    xhr.setRequestHeader("Authorization", "Bearer "+responseObj.access_token);
-    var data = new FormData();
-    data.append("sport_type", "WeightTraining");
-    data.append("name", "Strong Log Workout");
-    data.append("description", description);
-    data.append("start_date_local", dateTimeString);
-    data.append("elapsed_time", 3600);
-    data.append("trainer", "0");
-    data.append("commute", "0");
-    xhr.addEventListener('load', function(event) {
-        console.log(xhr.status);
-        console.log(xhr.responseText);
-        if(xhr.status === 201) {
-            alert("Strava Upload Successful");
-            window.location.replace("https://stronglog.github.io");
-        }
+
+    let options = {
+        weekday: "long",
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+    };
+    
+    let localDateTime = new Intl.DateTimeFormat(undefined, options).format(currentDateTime);
+    workoutTitle.value = "Workout (" + localDateTime + ")";
+    workoutDescription.value = description;
+
+    let uploadObject = {};
+    uploadObject.responseJSON = responseJSON;
+    uploadObject.key = key;
+    
+    let upload = document.getElementById("upload");
+    upload.addEventListener("click", event => {
+        uploadObject.title = workoutTitle.value;
+        uploadObject.description = workoutDescription.value;
+        uploadFile(titleDescription);
     });
-    xhr.send(data);
+
+    let cancel = document.getElementById("cancel");
+    cancel.addEventListener("click", event => {
+        let uploadObject = null;
+        uploadFile(titleDescription);
+    });
+}
+
+function uploadFile(uploadObject) {
+    if (uploadObject !== null) {
+        var responseJSON = uploadObject.responseJSON;
+        var key = uploadObject.key;
+
+        var description = uploadObject.description;
+        var title = uploadObject.title;
+        
+        let dateTimeString = createLocalTime();
+           
+        console.log(responseJSON);
+        var responseObj = JSON.parse(responseJSON);
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "https://www.strava.com/api/v3/activities", true);
+        xhr.setRequestHeader("Authorization", "Bearer "+responseObj.access_token);
+        var data = new FormData();
+        data.append("sport_type", "WeightTraining");
+        data.append("name", "Strong Log Workout");
+        data.append("description", description);
+        data.append("start_date_local", dateTimeString);
+        data.append("elapsed_time", 3600);
+        data.append("trainer", "0");
+        data.append("commute", "0");
+        xhr.addEventListener('load', function(event) {
+            console.log(xhr.status);
+            console.log(xhr.responseText);
+            if(xhr.status === 201) {
+                alert("Strava Upload Successful");
+                window.location.replace("https://stronglog.github.io");
+            }
+        });
+        xhr.send(data);
+    } else {
+        alert("Strava upload cancelled");
+    }
 }
 
 
-function displayRecord() {
+function createRecord(workout) {
     let recordDiv = document.getElementById("current_record");
+
+    if (recordDiv === null) {
+        recordDiv = document.createElement("DIV");
+        recordDiv.setAttribute("id", "current_record")
+    }
+
     while (recordDiv.firstChild) {
         recordDiv.removeChild(recordDiv.firstChild);
     }
@@ -219,34 +289,36 @@ function displayRecord() {
     newHeading.appendChild(content);
     recordDiv.appendChild(newHeading);
 
-    newList = document.createElement("UL");
-    
+    newList = document.createElement("UL");    
     
     for (i=0; i<workout.length; i++) {
         newItem = document.createElement("LI");
         if (workout[i].Reps > 1) {
             if (workout[i].Weight) {
-                content = document.createTextNode(workout[i].Exercise + " " + workout[i].Reps + " reps at " + workout[i].Weight + "kg");
+                content = document.createTextNode(workout[i].Exercise + " " + workout[i].Reps + " reps at " + workout[i].Weight + "kg 🖉🗑");
             } else {
-                content = document.createTextNode(workout[i].Exercise + " " + workout[i].Reps + " reps");
+                content = document.createTextNode(workout[i].Exercise + " " + workout[i].Reps + " reps 🖉🗑");
             }
         } else {
             if (workout[i].Weight) {
-                content = document.createTextNode(workout[i].Exercise + " " + workout[i].Reps + " rep at " + workout[i].Weight + "kg");
+                content = document.createTextNode(workout[i].Exercise + " " + workout[i].Reps + " rep at " + workout[i].Weight + "kg 🖉🗑");
             } else {
-                content = document.createTextNode(workout[i].Exercise + " " + workout[i].Reps + " rep");
+                content = document.createTextNode(workout[i].Exercise + " " + workout[i].Reps + " rep 🖉🗑");
             }
         }
         
 
-        
+        //content.setAttribute("white-space", "pre");
         newItem.appendChild(content);
         newList.appendChild(newItem);
     }
     recordDiv.appendChild(newList);
+
+    return recordDiv;
 }
 
 function saveSet(event) {
+    let exercisingDiv = document.getElementById("exercise_details");
     let exercise = event.target.parentNode.className;
     let reps = event.target.parentNode.querySelector("#reps").value;
     let weight = event.target.parentNode.querySelector("#weight").value;
@@ -260,7 +332,8 @@ function saveSet(event) {
                       Reps: reps,
                       Weight: weight});
         console.log(workout);
-        displayRecord();
+        let recordDiv = createRecord(workout);
+        exercisingDiv.appendChild(recordDiv);
     }
 }
 
@@ -271,6 +344,9 @@ function completedExercises(event) {
     if (workout.length > 0) {
         console.log(workout.length);
         endWorkoutButton.removeAttribute("disabled");
+        let recordDiv = createRecord(workout);
+        selectExerciseDiv.appendChild(recordDiv);
+        
     }
 
     while (parentDiv.firstChild) {
@@ -279,7 +355,7 @@ function completedExercises(event) {
 }
 
 function createExerciseScreen(selectedExercises) {
-    let exercisingDiv = document.getElementById("exercising");
+    let exercisingDiv = document.getElementById("exercise_details");
     let newHeading = "";
     let newRepsLabel = "";
     let newWeightLabel = "";
