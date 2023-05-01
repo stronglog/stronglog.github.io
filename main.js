@@ -224,13 +224,13 @@ function editTitleDescription(responseJSON, key) {
     upload.addEventListener("click", event => {
         uploadObject.title = workoutTitle.value;
         uploadObject.description = workoutDescription.value;
-        uploadFile(titleDescription);
+        uploadFile(uploadObject);
     });
 
     let cancel = document.getElementById("cancel");
     cancel.addEventListener("click", event => {
         let uploadObject = null;
-        uploadFile(titleDescription);
+        uploadFile(uploadObject);
     });
 }
 
