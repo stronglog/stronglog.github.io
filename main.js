@@ -377,6 +377,7 @@ function createExerciseScreen(selectedExercises) {
         newRepsInput = document.createElement("INPUT");
         newRepsInput.setAttribute("id", "reps");
         newRepsInput.setAttribute("type", "number");
+        newRepsInput.setAttribute("class", "threeWide");
         newRepsInput.setAttribute("min", "0");
         newDiv.appendChild(newRepsInput);
 
@@ -388,6 +389,7 @@ function createExerciseScreen(selectedExercises) {
         newWeightInput = document.createElement("INPUT");
         newWeightInput.setAttribute("id", "weight");
         newWeightInput.setAttribute("type", "number");
+        newWeightInput.setAttribute("class", "threeWide");
         newDiv.appendChild(newWeightInput);
 
         newSaveSetButton = document.createElement("BUTTON");
