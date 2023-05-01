@@ -251,7 +251,7 @@ function uploadFile(uploadObject) {
         xhr.setRequestHeader("Authorization", "Bearer "+responseObj.access_token);
         var data = new FormData();
         data.append("sport_type", "WeightTraining");
-        data.append("name", "Strong Log Workout");
+        data.append("name", title);
         data.append("description", description);
         data.append("start_date_local", dateTimeString);
         data.append("elapsed_time", 3600);
