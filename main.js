@@ -1,6 +1,11 @@
-//check if we are mid-strava upload each time the page is loaded
+var workout = [];
+var endWorkoutButton = document.getElementById("end_workout");
+endWorkoutButton.addEventListener("click", endWorkout);
+
+//checks when page is loaded
 document.addEventListener("DOMContentLoaded", function() {
     console.log("DOMContentLoaded");
+    //check if we are mid-strava upload
     var urlString = window.location;
     var urlParameters = (new URL(urlString)).searchParams;
     var code = urlParameters.get('code');
@@ -12,8 +17,20 @@ document.addEventListener("DOMContentLoaded", function() {
     console.log(scope);
     console.log(state);
     
-    if (code != null && scope != null) {
+    if (code !== null && scope !== null) {
         getAccessToken(code, scope, state);
+    } else {
+        //check if we are mid-workout
+        let workoutString = localStorage.getItem("workout_string");
+        if (workoutString !== null) {
+            workout = JSON.parse(workoutString);
+            let exercisingDiv = document.getElementById("exercise_details");
+            let recordDiv = createRecord(workout);
+            exercisingDiv.appendChild(recordDiv);
+            if (workout.length > 0) {
+                endWorkoutButton.removeAttribute("disabled");    
+            }            
+        }
     }
 });
 
@@ -52,11 +69,10 @@ function toHoursMinutes(totalMinutes) {
 }
 
 
-var workout = [];
+
 var selectExerciseDiv = document.getElementById("select_exercise");
 
-var endWorkoutButton = document.getElementById("end_workout");
-endWorkoutButton.addEventListener("click", endWorkout);
+
 
 let beginExercise = document.getElementById("begin_exercise");
 beginExercise.addEventListener("click", startExercise);
@@ -65,6 +81,12 @@ let stravaUploadDiv = document.getElementById("upload_screen");
 stravaUploadDiv.style.display = 'none';
 
 function startExercise() {
+    if (localStorage.getItem("start_time") === null) {
+        let startTime = Date.now();
+        localStorage.setItem("start_time", startTime);
+    }
+
+    
     let selection = document.getElementById("exercises");
     let collection = selection.selectedOptions;
     let selectedExercises = [];
@@ -93,6 +115,15 @@ function endWorkout() {
     console.log(workout);
     var workoutString = JSON.stringify(workout);
     console.log(workoutString);
+
+    let endTime = Date.now();
+    let startTime = localStorage.getItem("start_time");
+    localStorage.removeItem("start_time");
+    localStorage.removeItem("workout_string");
+
+    let durationSeconds = (endTime - startTime) / 1000;
+    console.log(durationSeconds);
+    
     stravaUpload(workoutString);
 }
 
@@ -254,6 +285,7 @@ function uploadFile(uploadObject) {
         data.append("name", title);
         data.append("description", description);
         data.append("start_date_local", dateTimeString);
+        //elapsed time in seconds
         data.append("elapsed_time", 3600);
         data.append("trainer", "0");
         data.append("commute", "0");
@@ -427,7 +459,13 @@ function deleteSet() {
     if (window.confirm("Do you really want to delete set "+ set + "?")) {
         workout.splice(index, 1);
         createRecord(workout);    
-    };
+    }
+    
+    localStorage.setItem("workout_string", JSON.stringify(workout));
+    
+    if (workout.length < 1) {
+        endWorkoutButton.setAttribute("disabled", true);
+    }
 }
 
 function saveSet() {
@@ -445,6 +483,7 @@ function saveSet() {
                       Reps: reps,
                       Weight: weight});
         console.log(workout);
+        localStorage.setItem("workout_string", JSON.stringify(workout));
         let recordDiv = createRecord(workout);
         exercisingDiv.appendChild(recordDiv);
     }
