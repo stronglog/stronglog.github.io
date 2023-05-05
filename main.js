@@ -277,7 +277,7 @@ function uploadFile(uploadObject) {
         let dateTimeString = createLocalTime();
 
         let durationSeconds = localStorage.getItem(key+"_duration");
-        
+        console.log(durationSeconds);
         
         console.log(responseJSON);
         var responseObj = JSON.parse(responseJSON);
