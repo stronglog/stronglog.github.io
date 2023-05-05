@@ -31,6 +31,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 endWorkoutButton.removeAttribute("disabled");    
             }            
         }
+        //check if a timer is running
+        checkForRunningTimer();
     }
 });
 
@@ -333,7 +335,7 @@ function createRecord(workout) {
 
             const array = new Uint16Array(1);
             self.crypto.getRandomValues(array);
-            console.log(array);
+            //console.log(array);
             
             newItem.setAttribute("id", "set" + array[0]);
             if (workout[i].Reps > 1) {
