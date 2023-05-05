@@ -124,7 +124,7 @@ function endWorkout() {
     let durationSeconds = (endTime - startTime) / 1000;
     console.log(durationSeconds);
     
-    stravaUpload(workoutString);
+    stravaUpload(workoutString, durationSeconds);
 }
 
 
@@ -195,9 +195,10 @@ function createDescription(workoutString) {
     return description;
 }
 
-function stravaUpload(workoutString) {
+function stravaUpload(workoutString, duration) {
     var key = Date.now();
     localStorage.setItem(key, workoutString);
+    localStorage.setItem(key+"_duration", duration);
     console.log("redirect to strava oauth login");
     window.location.href = "https://www.strava.com/oauth/authorize?client_id=37683&response_type=code&redirect_uri=https://stronglog.github.io/&approval_prompt=force&scope=activity:write&state="+key;
 }
@@ -274,7 +275,10 @@ function uploadFile(uploadObject) {
         var title = uploadObject.title;
         
         let dateTimeString = createLocalTime();
-           
+
+        let durationSeconds = localStorage.getItem(key+"_duration");
+        
+        
         console.log(responseJSON);
         var responseObj = JSON.parse(responseJSON);
         var xhr = new XMLHttpRequest();
@@ -286,7 +290,7 @@ function uploadFile(uploadObject) {
         data.append("description", description);
         data.append("start_date_local", dateTimeString);
         //elapsed time in seconds
-        data.append("elapsed_time", 3600);
+        data.append("elapsed_time", durationSeconds);
         data.append("trainer", "0");
         data.append("commute", "0");
         xhr.addEventListener('load', function(event) {
