@@ -9,55 +9,80 @@
     </head>
     
     <body>
-        <div id="homescreen">
+        <div class="header">
             <h1>Strong Log</h1>
-    
-            <div id="select_exercise">
-                <label>Please select one or more exercises (select more than one for a superset or giant set):
-                    <select id="exercises" name="exercise" multiple size="8">
-                        <option value="deadlift">Deadlift</option>
-                        <option value="dbpress">DB Press</option>
-                        <option value="press">Press</option>
-                        <option value="frontsquat">Front Squat</option>
-                        <option value="pullups">Pull Ups</option>
-                        <option value="pushups">Push Ups</option>
-                        <option value="bwrows">Bodyweight Rows</option>
-                        <option value="dbrows">DB Rows</option>
-                    </select>
-                </label>
-
-                <button id="begin_exercise">Begin Exercise</button>
-                <button id="end_workout" disabled="true">End Workout</button>
-            </div>
         </div>
 
-        <div id="timer_div">
+        <div class="slider">
+            <span id="tab_1">Add Exercises</span>
+            <span id="tab_2">Workout</span>
+            <span id="tab_3">History</span>
+        </div>
+
+        <div class="main">
+            <div id="slides_container" class="slides">
+                
+                <div id="page_1">
+                    <p>Add exercises to workout</p>
+                </div>
+                
+                <div id="page_2">
+                    <div id="select_exercise">
+                        <label>Please select one or more exercises (select more than one for a superset or giant set):
+                            <select id="exercises" name="exercise" multiple size="8">
+                                <option value="deadlift">Deadlift</option>
+                                <option value="dbpress">DB Press</option>
+                                <option value="press">Press</option>
+                                <option value="frontsquat">Front Squat</option>
+                                <option value="pullups">Pull Ups</option>
+                                <option value="pushups">Push Ups</option>
+                                <option value="bwrows">Bodyweight Rows</option>
+                                <option value="dbrows">DB Rows</option>
+                            </select>
+                        </label>
+
+                        <button id="begin_exercise">Begin Exercise</button>
+                        <button id="end_workout" disabled="true">End Workout</button>
+                        
+                    </div>
+                    
+                    <div id="exercise_details">
+                    </div>
+
+                    <div id="exercise_record">
+                    </div>
+                </div>
+                
+                <div id="page_3">
+                    <p>Workout History</p>
+                </div>
+            
+            </div>
+        </div>
+        
+        
+        <div class="footer">
+            <div id="timer_div">
             <p>
                 <svg xmlns="http://www.w3.org/2000/svg" id="increment_timer" width="1em" viewBox="0 0 16 16">
-                	<path d="M8 0 L8 16" stroke="black" stroke-width="4" fill="none"/>
-                    <path d="M0 8 L16 8" stroke="black" stroke-width="4" fill="none"/> 
+                	<path d="M8 0 L8 16" stroke="currentColor" stroke-width="4" fill="none"/>
+                    <path d="M0 8 L16 8" stroke="currentColor" stroke-width="4" fill="none"/> 
                 </svg>
                 <svg xmlns="http://www.w3.org/2000/svg" id="decrement_timer" width="1em" viewBox="0 0 16 16">
-                	<path d="M0 8 L16 8" stroke="black" stroke-width="4" fill="none"/>
+                	<path d="M0 8 L16 8" stroke="currentColor" stroke-width="4" fill="none"/>
                 </svg>
                 <span id="timer_text">00:30</span>
                 <svg xmlns="http://www.w3.org/2000/svg" id="start_timer" width="1em" viewBox="0 0 16 16">
-                	<path d="M0 0 L15 8 L0 16 z" fill="black"/>
+                	<path d="M0 0 L15 8 L0 16 z" fill="currentColor"/>
                 </svg>
                 <svg xmlns="http://www.w3.org/2000/svg" id="stop_timer" width="1em" viewBox="0 0 16 16">
-                    <path d="M1 1 L15 1 L15 15 L1 15 z" fill="black"/>
+                    <path d="M1 1 L15 1 L15 15 L1 15 z" fill="currentColor"/>
                 </svg>
             </p>
         </div>
-
-        <div id="exercise_screen">
-            
-            <div id="exercise_details">
-            </div>
-    
         </div>
         
-        
+       
         <div id="upload_screen">
             <h2>Strava Upload</h2>
             <label for="workout_title">Title:</label>
@@ -73,5 +98,6 @@
         
         <script src="main.js"></script>
         <script src="timer.js"></script>
+        <script src="layout.js"></script>
     </body>
 </html>

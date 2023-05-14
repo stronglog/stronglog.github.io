@@ -20,13 +20,21 @@ document.addEventListener("DOMContentLoaded", function() {
     if (code !== null && scope !== null) {
         getAccessToken(code, scope, state);
     } else {
+        //check if we are mid-exercise
+        let currentExercises = JSON.parse(localStorage.getItem("currentExercises"));
+        console.log(currentExercises);
+        if (currentExercises !== null) {
+            switchToExerciseScreen(currentExercises);
+        }
+        
         //check if we are mid-workout
         let workoutString = localStorage.getItem("workout_string");
         if (workoutString !== null) {
             workout = JSON.parse(workoutString);
-            let exercisingDiv = document.getElementById("exercise_details");
+            let exerciseRecord = document.getElementById("exercise_record");
             let recordDiv = createRecord(workout);
-            exercisingDiv.appendChild(recordDiv);
+            exerciseRecord.appendChild(recordDiv);
+            checkWindowHeight()
             if (workout.length > 0) {
                 endWorkoutButton.removeAttribute("disabled");    
             }            
@@ -88,6 +96,8 @@ function startExercise() {
         localStorage.setItem("start_time", startTime);
     }
 
+    localStorage.setItem("midExercise", "true");
+
     
     let selection = document.getElementById("exercises");
     let collection = selection.selectedOptions;
@@ -98,19 +108,27 @@ function startExercise() {
             selectedExercises.push(collection[i].innerText);
         }
         console.log(selectedExercises);
-        selectExerciseDiv.style.display = 'none';
-        endWorkoutButton.style.display = 'none';
-        createExerciseScreen(selectedExercises);
+
+        localStorage.setItem("currentExercises", JSON.stringify(selectedExercises));
+
+        switchToExerciseScreen(selectedExercises)
 
         if (workout.length > 0) {
-            let exercisingDiv = document.getElementById("exercise_details");
+            let exercisingDiv = document.getElementById("exercise_record");
             let recordDiv = createRecord(workout);
             exercisingDiv.appendChild(recordDiv);
+            checkWindowHeight()
         }
 
     } else {
         alert("Please select at least one exercise");
     }
+}
+
+function switchToExerciseScreen(selectedExercises) {
+    selectExerciseDiv.style.display = 'none';
+    endWorkoutButton.style.display = 'none';
+    createExerciseScreen(selectedExercises);
 }
 
 function endWorkout() {
@@ -387,6 +405,7 @@ function acceptEdit() {
     workout[index].Weight = newWeight;
 
     createRecord(workout);
+    checkWindowHeight()
 }
 
 function getIndexOfListItemFromId(list, itemId) {
@@ -440,11 +459,11 @@ function editSet() {
         '<input type="number" id="edit_weight" value="' + weight + '" class="fourWide">' + "kg " +
         
         `<svg xmlns="http://www.w3.org/2000/svg" onclick="acceptEdit()" width="1em" viewBox="0 0 16 16">
-        	<path d="M2 10 L6 14 L14 3" stroke="black" stroke-width="4" fill="none"/> 
+        	<path d="M2 10 L6 14 L14 3" stroke="currentColor" stroke-width="4" fill="none"/> 
         </svg>`
         + `<svg xmlns="http://www.w3.org/2000/svg" onclick="discardEdit()" width="1em" viewBox="0 0 16 16">
-        	<path d="M4 4 L14 14" stroke="black" stroke-width="4" fill="none"/>
-            <path d="M4 14 L14 4" stroke="black" stroke-width="4" fill="none"/> 
+        	<path d="M4 4 L14 14" stroke="currentColor" stroke-width="4" fill="none"/>
+            <path d="M4 14 L14 4" stroke="currentColor" stroke-width="4" fill="none"/> 
         </svg>`
 }
 
@@ -464,7 +483,8 @@ function deleteSet() {
     let set = Number.parseInt(index)+1;
     if (window.confirm("Do you really want to delete set "+ set + "?")) {
         workout.splice(index, 1);
-        createRecord(workout);    
+        createRecord(workout);
+        checkWindowHeight()
     }
     
     localStorage.setItem("workout_string", JSON.stringify(workout));
@@ -492,10 +512,12 @@ function saveSet() {
         localStorage.setItem("workout_string", JSON.stringify(workout));
         let recordDiv = createRecord(workout);
         exercisingDiv.appendChild(recordDiv);
+        checkWindowHeight()
     }
 }
 
 function completedExercises(event) {
+    localStorage.removeItem("currentExercises");
     let parentDiv = event.target.parentNode;
     selectExerciseDiv.style.display = 'inline-block';
     endWorkoutButton.style.display = 'inline-block';
@@ -504,6 +526,7 @@ function completedExercises(event) {
         endWorkoutButton.removeAttribute("disabled");
         let recordDiv = createRecord(workout);
         selectExerciseDiv.appendChild(recordDiv);
+        checkWindowHeight()
         
     }
 

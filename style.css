@@ -1,3 +1,90 @@
+* {
+  box-sizing: border-box;
+}
+
+.slider {
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+}
+
+.slider > span {
+  width: 33.33%;
+  height: 1.5rem;
+  background: #aaa;
+  color: black;
+  text-decoration: none;
+  text-align: center;
+
+  position: relative;
+  margin: 0;
+  border: 0;
+  padding-top: 3px;
+}
+
+.slider > a:focus {
+  background: #888;
+}
+
+#tab_1 {
+  background: #eee;
+  border-bottom: solid #F30001 2px;
+}
+
+.main {
+  height: calc(100vh - 172px);
+}
+
+#page_2 {
+    display: block;
+}
+
+
+.slides {
+  display: flex;
+  flex-direction: row;
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  
+  scroll-behavior: smooth;
+  height: 100%;
+  overflow-y: hidden;
+}
+
+
+.slides > div {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+  width: 100%;
+  background: #030302;
+  transform-origin: center center;
+  transform: scale(1);
+  transition: transform 0.5s;
+  position: relative;
+  display: flex;
+
+  padding-top: 2rem;
+  padding-left: 1rem;
+}
+
+
+
 .fourWide {
     width: 4em;
+}
+
+html, body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  
+  font-family: sans-serif;
+  color: #F5F7F4;
+  background:#030302
 }
