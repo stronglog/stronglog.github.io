@@ -4,7 +4,9 @@ endWorkoutButton.addEventListener("click", endWorkout);
 
 //checks when page is loaded
 document.addEventListener("DOMContentLoaded", function() {
-    console.log("DOMContentLoaded");
+    displayWorkoutHistory();
+
+    
     //check if we are mid-strava upload
     var urlString = window.location;
     var urlParameters = (new URL(urlString)).searchParams;
@@ -13,16 +15,16 @@ document.addEventListener("DOMContentLoaded", function() {
     var err = urlParameters.get('error');
     var state = urlParameters.get('state');
     
-    console.log(code);
-    console.log(scope);
-    console.log(state);
+    //console.log(code);
+    //console.log(scope);
+    //console.log(state);
     
     if (code !== null && scope !== null) {
         getAccessToken(code, scope, state);
     } else {
         //check if we are mid-exercise
         let currentExercises = JSON.parse(localStorage.getItem("currentExercises"));
-        console.log(currentExercises);
+        //console.log(currentExercises);
         if (currentExercises !== null) {
             switchToExerciseScreen(currentExercises);
         }
@@ -44,9 +46,9 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-function createLocalTime() {
+function createLocalTime(startTime) {
     //required format is 2013-10-20T19:20:30+01:00;
-    let t = new Date();
+    let t = new Date(startTime);
     let z = t.getTimezoneOffset() * 60 * 1000;
     let tLocal = t-z
     tLocal = new Date(tLocal);
@@ -103,7 +105,7 @@ function startExercise() {
     let collection = selection.selectedOptions;
     let selectedExercises = [];
     if (collection.length > 0) {
-        for (i=0; i<collection.length; i++) {
+        for (let i=0; i<collection.length; i++) {
             console.log(collection[i].innerText);
             selectedExercises.push(collection[i].innerText);
         }
@@ -143,9 +145,13 @@ function endWorkout() {
 
     let durationSeconds = (endTime - startTime) / 1000;
     console.log(durationSeconds);
+
+    localSaveWorkoutHistory(workout, startTime, durationSeconds);
+    //stravaUpload(workoutString, startTime, durationSeconds);
     
-    stravaUpload(workoutString, durationSeconds);
 }
+
+
 
 
 
@@ -157,7 +163,7 @@ function createDescription(workoutString) {
     var description = "";
     var exercise = "";
     var exerciseList = {};
-    for (i=0; i<workout.length; i++) {
+    for (let i=0; i<workout.length; i++) {
         exercise = workout[i].Exercise;
         if (exercise in exerciseList) {
             //add set
@@ -184,7 +190,7 @@ function createDescription(workoutString) {
     }
     let keys = Object.keys(exerciseList);
 
-    for (i=0; i<keys.length; i++) {
+    for (let i=0; i<keys.length; i++) {
         description = description+keys[i]+"\n";
 
         for  (j=0; j<exerciseList[keys[i]].length; j++) {
@@ -215,10 +221,13 @@ function createDescription(workoutString) {
     return description;
 }
 
-function stravaUpload(workoutString, duration) {
+function stravaUpload(workoutString, startTime, durationSeconds) {
     var key = Date.now();
+
     localStorage.setItem(key, workoutString);
+    localStorage.setItem(key+"_startTime", startTime)
     localStorage.setItem(key+"_duration", duration);
+
     console.log("redirect to strava oauth login");
     window.location.href = "https://www.strava.com/oauth/authorize?client_id=37683&response_type=code&redirect_uri=https://stronglog.github.io/&approval_prompt=force&scope=activity:write&state="+key;
 }
@@ -243,17 +252,8 @@ function getAccessToken(code, scope, key) {
     xhr.send(JSON.stringify(data));
 }
 
-function editTitleDescription(responseJSON, key) {
-    stravaUploadDiv.style.display = 'inline-block';
-    selectExerciseDiv.style.display = 'none';
-    endWorkoutButton.style.display = 'none';
-    
-    let workoutTitle = document.getElementById("workout_title");
-    let workoutDescription = document.getElementById("workout_description");
-    let currentDateTime = new Date();
-
-    var workoutString = localStorage.getItem(key);
-    var description = createDescription(workoutString);
+function createLocalDateTimeString(timeStampMilli) {
+    let startDateTime = new Date(+timeStampMilli);
 
     let options = {
         weekday: "long",
@@ -264,7 +264,28 @@ function editTitleDescription(responseJSON, key) {
         minute: "numeric",
     };
     
-    let localDateTime = new Intl.DateTimeFormat(undefined, options).format(currentDateTime);
+    let localDateTime = new Intl.DateTimeFormat(undefined, options).format(startDateTime);
+
+    return localDateTime;
+}
+
+
+function editTitleDescription(responseJSON, key) {
+    stravaUploadDiv.style.display = 'inline-block';
+    selectExerciseDiv.style.display = 'none';
+    endWorkoutButton.style.display = 'none';
+    
+    let workoutTitle = document.getElementById("workout_title");
+    let workoutDescription = document.getElementById("workout_description");
+
+  
+    var workoutString = localStorage.getItem(key);
+    var description = createDescription(workoutString);
+
+    
+    let startTime = parseInt(localStorage.getItem(key+"startTime"));
+    let localDateTime = createLocalDateTimeString(startTime);
+
     workoutTitle.value = "Workout (" + localDateTime + ")";
     workoutDescription.value = description;
 
@@ -293,8 +314,10 @@ function uploadFile(uploadObject) {
 
         var description = uploadObject.description;
         var title = uploadObject.title;
+
+        let startTime = parseInt(localStorage.getItem(key+"startTime"));
         
-        let dateTimeString = createLocalTime();
+        let dateTimeString = createLocalTime(startTime);
 
         let durationSeconds = parseInt(localStorage.getItem(key+"_duration"));
         console.log(durationSeconds);
@@ -341,14 +364,14 @@ function createRecord(workout) {
     }
 
     if (workout.length > 0) {
-        newHeading = document.createElement("H2");
+        newHeading = document.createElement("H3");
         content = document.createTextNode("Sets Completed");
         newHeading.appendChild(content);
         recordDiv.appendChild(newHeading);
 
         newList = document.createElement("OL");    
         
-        for (i=0; i<workout.length; i++) {
+        for (let i=0; i<workout.length; i++) {
             newItem = document.createElement("LI");
 
             const array = new Uint16Array(1);
@@ -541,7 +564,7 @@ function createExerciseScreen(selectedExercises) {
     let newRepsLabel = "";
     let newWeightLabel = "";
     let content = "";
-    for (i=0; i<selectedExercises.length; i++) {
+    for (let i=0; i<selectedExercises.length; i++) {
         newDiv = document.createElement("DIV");
         newDiv.setAttribute("class", selectedExercises[i]);
         

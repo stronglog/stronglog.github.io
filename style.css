@@ -40,6 +40,9 @@
     display: block;
 }
 
+#page_3 {
+  display: block; 
+}
 
 .slides {
   display: flex;

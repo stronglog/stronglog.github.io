@@ -70,7 +70,7 @@ function checkWindowHeight() {
 
 function ready() {
     let tabNumber = localStorage.getItem("tabNumber");
-    console.log(tabNumber);
+    //console.log(tabNumber);
     
     if (tabNumber !== null) {
         let targetTabId = "tab_"+tabNumber;
@@ -78,10 +78,10 @@ function ready() {
     
         let allTabs = targetTab.parentElement.children;
     
-        console.log(allTabs);
+        //console.log(allTabs);
         
         Array.from(allTabs).forEach(function (currentItem, currentIndex) {
-            console.log(currentItem);
+            //console.log(currentItem);
             currentItem.style.background = "#aaa"
             currentItem.style.borderBottom = "none";
         });
@@ -92,13 +92,13 @@ function ready() {
         
         
         let targetPage = document.getElementById("page_"+tabNumber);
-        console.log(targetPage);
+        //console.log(targetPage);
         
         if (targetPage.scrollHeight > targetPage.clientHeight) {
             console.log("overflow");
             targetPage.style.overflowY = "scroll";
         } else {
-            console.log("no overflow");
+            //console.log("no overflow");
             targetPage.style.overflowY = "hidden";
         }
         
