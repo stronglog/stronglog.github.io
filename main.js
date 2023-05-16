@@ -220,7 +220,7 @@ function createDescription(workoutString) {
     if (cumulativeWeight > 0) {
         description = "Total weight lifted: " + cumulativeWeight + "kg \n" + description;
     }
-    description = description + "\nFree online workout log: https://stronglog.github.io/"
+    description = "Free online workout log: https://stronglog.github.io/ \n" + description;
     console.log(description);
     return description;
 }
