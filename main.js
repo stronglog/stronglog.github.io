@@ -90,6 +90,10 @@ var selectExerciseDiv = document.getElementById("select_exercise");
 let beginExercise = document.getElementById("begin_exercise");
 beginExercise.addEventListener("click", startExercise);
 
+let slider = document.getElementById("slider");
+let main = document.getElementById("main");
+let footer = document.getElementById("footer");
+
 let stravaUploadDiv = document.getElementById("upload_screen");
 stravaUploadDiv.style.display = 'none';
 
@@ -281,8 +285,10 @@ function createLocalDateTimeString(timeStampMilli) {
 
 function editTitleDescription(responseJSON, key) {
     stravaUploadDiv.style.display = 'inline-block';
-    selectExerciseDiv.style.display = 'none';
-    endWorkoutButton.style.display = 'none';
+        
+    slider.style.display = 'none';
+    main.style.display = 'none';
+    footer.style.display = 'none';
     
     let workoutTitle = document.getElementById("workout_title");
     let workoutDescription = document.getElementById("workout_description");
@@ -351,12 +357,19 @@ function uploadFile(uploadObject) {
             console.log(xhr.responseText);
             if(xhr.status === 201) {
                 alert("Strava Upload Successful");
+                localStorage.removeItem(key)
+                localStorage.removeItem(key+"_startTime")
+                localStorage.removeItem(key+"_duration")
                 window.location.replace("https://stronglog.github.io");
             }
         });
         xhr.send(data);
     } else {
         alert("Strava upload cancelled");
+        localStorage.removeItem(key)
+        localStorage.removeItem(key+"_startTime")
+        localStorage.removeItem(key+"_duration")
+        window.location.replace("https://stronglog.github.io");
     }
 }
 
