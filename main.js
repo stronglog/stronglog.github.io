@@ -292,7 +292,7 @@ function editTitleDescription(responseJSON, key) {
     var description = createDescription(workoutString);
 
     
-    let startTime = parseInt(localStorage.getItem(key+"startTime"));
+    let startTime = parseInt(localStorage.getItem(key+"_startTime"));
     console.log(startTime);
     let localDateTime = createLocalDateTimeString(startTime);
 
@@ -325,7 +325,7 @@ function uploadFile(uploadObject) {
         var description = uploadObject.description;
         var title = uploadObject.title;
 
-        let startTime = parseInt(localStorage.getItem(key+"startTime"));
+        let startTime = parseInt(localStorage.getItem(key+"_startTime"));
         
         let dateTimeString = createLocalTime(startTime);
 
