@@ -155,7 +155,7 @@ function endWorkout() {
     
     createRecord(workout);
 
-    stravaUpload(workoutString, startTime, durationSeconds);
+    //stravaUpload(workoutString, startTime, durationSeconds);
     
 }
 
@@ -256,17 +256,10 @@ function getAccessToken(code, scope, key) {
     xhr.send(JSON.stringify(data));
 }
 
-/* 
-let now = Date.now();
-console.log(now);
-let localNow = createLocalDateTimeString(now);
-console.log(localNow);
-*/
-
 function createLocalDateTimeString(timeStampMilli) {
-    console.log(timeStampMilli);
+    //console.log(timeStampMilli);
     let startDateTime = new Date(+timeStampMilli);
-    console.log(startDateTime);
+    //console.log(startDateTime);
     
     let options = {
         weekday: "long",

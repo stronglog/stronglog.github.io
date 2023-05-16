@@ -1,4 +1,42 @@
 
+displayExerciseHistory();
+
+function displayExerciseHistory() {
+    let workoutHistory = JSON.parse(localStorage.getItem("workoutHistory"));
+    console.log(workoutHistory);
+
+    let exerciseList = {};
+
+    if (workoutHistory !== null) {
+        for (let i=0; i<workoutHistory.length; i++) {
+            for (let j=0; j<workoutHistory[i].workout.length; j++) {
+                let exerciseName = workoutHistory[i].workout[j].Exercise;
+                let keyPresent = findKey(exerciseList, exerciseName);
+                if (keyPresent === false) {
+                    exerciseList[exerciseName] = [];
+                    console.log(exerciseList);
+                }
+                let k = exerciseList[exerciseName].length;
+                console.log(k);
+                exerciseList[exerciseName][k] = {};
+                exerciseList[exerciseName][k]["dateTime"] = workoutHistory[i].startTime;
+                exerciseList[exerciseName][k]["Reps"] = workoutHistory[i].workout[j].Reps;
+                exerciseList[exerciseName][k]["Weight"] = workoutHistory[i].workout[j].Weight;
+                
+            }            
+        }
+    }
+    console.log(exerciseList);
+}
+
+function findKey(inputObject, item) {
+    for (key in inputObject) {
+        if (key === item) {
+            return true
+        }
+    }
+    return false;
+}
 
 function displayWorkoutHistory() {
     let workoutHistory = JSON.parse(localStorage.getItem("workoutHistory"));
@@ -125,7 +163,7 @@ function localSaveWorkoutHistory(workout, startTime, durationSeconds) {
 
     
     if (workoutHistory !== null) {
-        workoutHistory.push(historyObject);
+        workoutHistory.unshift(historyObject);
     } else {
         workoutHistory=[];
         workoutHistory[0] = historyObject;
