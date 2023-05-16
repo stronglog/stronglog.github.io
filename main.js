@@ -226,7 +226,7 @@ function stravaUpload(workoutString, startTime, durationSeconds) {
 
     localStorage.setItem(key, workoutString);
     localStorage.setItem(key+"_startTime", startTime)
-    localStorage.setItem(key+"_duration", duration);
+    localStorage.setItem(key+"_duration", durationSeconds);
 
     console.log("redirect to strava oauth login");
     window.location.href = "https://www.strava.com/oauth/authorize?client_id=37683&response_type=code&redirect_uri=https://stronglog.github.io/&approval_prompt=force&scope=activity:write&state="+key;
