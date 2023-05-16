@@ -95,7 +95,7 @@ function ready() {
         //console.log(targetPage);
         
         if (targetPage.scrollHeight > targetPage.clientHeight) {
-            console.log("overflow");
+            //console.log("overflow");
             targetPage.style.overflowY = "scroll";
         } else {
             //console.log("no overflow");

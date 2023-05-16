@@ -252,9 +252,18 @@ function getAccessToken(code, scope, key) {
     xhr.send(JSON.stringify(data));
 }
 
-function createLocalDateTimeString(timeStampMilli) {
-    let startDateTime = new Date(+timeStampMilli);
+/* 
+let now = Date.now();
+console.log(now);
+let localNow = createLocalDateTimeString(now);
+console.log(localNow);
+*/
 
+function createLocalDateTimeString(timeStampMilli) {
+    console.log(timeStampMilli);
+    let startDateTime = new Date(+timeStampMilli);
+    console.log(startDateTime);
+    
     let options = {
         weekday: "long",
         year: "numeric",
@@ -284,6 +293,7 @@ function editTitleDescription(responseJSON, key) {
 
     
     let startTime = parseInt(localStorage.getItem(key+"startTime"));
+    console.log(startTime);
     let localDateTime = createLocalDateTimeString(startTime);
 
     workoutTitle.value = "Workout (" + localDateTime + ")";

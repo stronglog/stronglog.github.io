@@ -2,7 +2,7 @@
 
 function displayWorkoutHistory() {
     let workoutHistory = JSON.parse(localStorage.getItem("workoutHistory"));
-    console.log(workoutHistory);
+    //console.log(workoutHistory);
 
     if (workoutHistory !== null) {      
         let historyPage = document.getElementById("page_3");
@@ -11,9 +11,9 @@ function displayWorkoutHistory() {
            historyPage.removeChild(historyPage.firstChild);
         }
 
-        console.log(workoutHistory.length);
+        //console.log(workoutHistory.length);
         for (let i=0; i<workoutHistory.length; i++) {
-            console.log(workoutHistory[i]);
+            //console.log(workoutHistory[i]);
             let startTime = workoutHistory[i].startTime;
             let durationSeconds = workoutHistory[i].durationSeconds;
 
@@ -50,9 +50,9 @@ function createDuration(durationSeconds) {
     remainingSeconds = remainingSeconds - (minutes * 60);
     let seconds = Math.floor(remainingSeconds);
 
-    console.log(seconds);
-    console.log(minutes);
-    console.log(hours);
+    //console.log(seconds);
+    //console.log(minutes);
+    //console.log(hours);
 
     let timeString = "";
     
@@ -79,7 +79,7 @@ function createDuration(durationSeconds) {
         }
         
     }
-    console.log(timeString);
+    //console.log(timeString);
     return timeString;
 }
 
