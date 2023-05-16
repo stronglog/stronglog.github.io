@@ -58,7 +58,7 @@ function createLocalTime(startTime) {
     console.log(t.getTimezoneOffset()/60);
 
     let timeDifference = toHoursMinutes(t.getTimezoneOffset());
-    
+    console.log(timeDifference)
     console.log(iso);
     return iso+timeDifference;
 }
@@ -78,6 +78,7 @@ function toHoursMinutes(totalMinutes) {
         timeString = "+"+timeString;
     }
     console.log(timeString);
+    return timeString;
 }
 
 
@@ -97,9 +98,6 @@ function startExercise() {
         let startTime = Date.now();
         localStorage.setItem("start_time", startTime);
     }
-
-    localStorage.setItem("midExercise", "true");
-
     
     let selection = document.getElementById("exercises");
     let collection = selection.selectedOptions;
@@ -147,13 +145,15 @@ function endWorkout() {
     console.log(durationSeconds);
 
     localSaveWorkoutHistory(workout, startTime, durationSeconds);
-    //stravaUpload(workoutString, startTime, durationSeconds);
+    displayWorkoutHistory();
+    
+    workout = [];
+    
+    createRecord(workout);
+
+    stravaUpload(workoutString, startTime, durationSeconds);
     
 }
-
-
-
-
 
 
 function createDescription(workoutString) {

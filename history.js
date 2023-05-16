@@ -16,23 +16,71 @@ function displayWorkoutHistory() {
             console.log(workoutHistory[i]);
             let startTime = workoutHistory[i].startTime;
             let durationSeconds = workoutHistory[i].durationSeconds;
+
+            let newDiv = document.createElement("DIV");
+            
+            let titleString = createTitle(startTime);
+            let newTitle = document.createElement("H2");
+            let titleText = document.createTextNode(titleString);
+            newTitle.appendChild(titleText);
+
+            let durationString = createDuration(durationSeconds);
+            let newPara = document.createElement("P");
+            let durationText = document.createTextNode(durationString);
+            newPara.appendChild(durationText);
+
             let exerciseList = createList(workoutHistory[i].workout);
 
-            let title = createTitle(startTime);
-            
-            let newDiv = document.createElement("DIV");
-            let newTitle = document.createElement("H2");
-            let titleString = document.createTextNode(title);
-
-            newTitle.appendChild(titleString);
 
             newDiv.appendChild(newTitle);
+            newDiv.appendChild(newPara);
             newDiv.appendChild(exerciseList);
             
             historyPage.appendChild(newDiv);
-            console.log("hello "+i);
         }
     }
+}
+
+function createDuration(durationSeconds) {
+    let hours = Math.floor(durationSeconds / 3600);
+
+    let remainingSeconds = durationSeconds - (hours * 3600);    
+    let minutes = Math.floor(remainingSeconds / 60);
+
+    remainingSeconds = remainingSeconds - (minutes * 60);
+    let seconds = Math.floor(remainingSeconds);
+
+    console.log(seconds);
+    console.log(minutes);
+    console.log(hours);
+
+    let timeString = "";
+    
+    if (hours > 0) {
+        if (hours > 1) {
+            timeString = hours.toString() + " hrs ";
+        } else {
+            timeString = hours.toString() + " hr ";
+        }
+        
+    }
+    if (minutes > 0) {
+        if (minutes > 1) {
+            timeString = timeString + minutes.toString() + " mins ";
+        } else {
+            timeString = timeString + minutes.toString() + " min ";
+        }
+    }
+    if (hours === 0 && seconds > 0) {
+        if (seconds > 1) {
+            timeString = timeString + seconds.toString() + " secs ";
+        } else {
+            timeString = timeString + seconds.toString() + " sec ";
+        }
+        
+    }
+    console.log(timeString);
+    return timeString;
 }
 
 function createTitle(startTime) {

@@ -16,6 +16,9 @@
   color: black;
   text-decoration: none;
   text-align: center;
+  cursor: pointer;
+  -webkit-user-select: none; /* Safari */
+  user-select: none;
 
   position: relative;
   margin: 0;
