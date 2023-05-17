@@ -1,7 +1,88 @@
 
-displayExerciseHistory();
+//createExerciseHistory();
 
-function displayExerciseHistory() {
+function createLocalTimeString(timeStampMilli) {
+    //console.log(timeStampMilli);
+    let startDateTime = new Date(+timeStampMilli);
+    //console.log(startDateTime);
+    
+    let options = {
+        hour: "numeric",
+        minute: "numeric",
+    };
+    
+    let localTime = new Intl.DateTimeFormat(undefined, options).format(startDateTime);
+
+    return localTime;
+}
+
+function createLocalDateString(timeStampMilli) {
+    //console.log(timeStampMilli);
+    let startDateTime = new Date(+timeStampMilli);
+    //console.log(startDateTime);
+    
+    let options = {
+        weekday: "long",
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+    };
+    
+    let localDate = new Intl.DateTimeFormat(undefined, options).format(startDateTime);
+
+    return localDate;
+}
+
+function displayExerciseHistory(selectedExercises) {
+    let historyPage = document.getElementById("page_3");
+
+    while (historyPage.firstChild) {
+       historyPage.removeChild(historyPage.firstChild);
+    }
+
+    let exerciseHistory = createExerciseHistory();
+    console.log(selectedExercises);
+    for (let i=0; i<selectedExercises.length; i++) {
+        let key = findKey(exerciseHistory, selectedExercises[i]);
+        if (key !== false) {
+            let newDiv = document.createElement("DIV");
+            let newTitle = document.createElement("H2");
+            let titleText = document.createTextNode(key);
+            newTitle.appendChild(titleText);
+            newDiv.appendChild(newTitle);
+
+            let newList = document.createElement("OL"); 
+
+            for (let j=0; j<exerciseHistory[key].length; j++) {
+                
+                let newItem = document.createElement("LI");
+                
+                console.log(exerciseHistory[key][j]);
+                
+                let localDateTime = createLocalDateTimeString(exerciseHistory[key][j].DateTime);
+                
+                if (exerciseHistory[key][j].Reps > 1) {
+                    if (exerciseHistory[key][j].Weight > 0) {
+                        newItem.innerText = localDateTime + " " + exerciseHistory[key][j].Reps + " reps at " + exerciseHistory[key][j].Weight + "kg ";
+                    } else {
+                        newItem.innerText = localDateTime + " " + exerciseHistory[key][j].Reps + " reps ";
+                    }
+                } else {
+                    if (exerciseHistory[key][j].Weight > 0) {
+                        newItem.innerText = localDateTime + " " + exerciseHistory[key][j].Reps + " rep at " + exerciseHistory[key][j].Weight + "kg ";
+                    } else {
+                        newItem.innerText = localDateTime + " " + exerciseHistory[key][j].Reps + " rep ";
+                    }
+                }
+                newList.appendChild(newItem);
+            }
+            newDiv.appendChild(newList);
+            historyPage.appendChild(newDiv);
+        }
+    }
+}
+
+function createExerciseHistory() {
     let workoutHistory = JSON.parse(localStorage.getItem("workoutHistory"));
     console.log(workoutHistory);
 
@@ -17,9 +98,9 @@ function displayExerciseHistory() {
                     console.log(exerciseList);
                 }
                 let k = exerciseList[exerciseName].length;
-                console.log(k);
+                //console.log(k);
                 exerciseList[exerciseName][k] = {};
-                exerciseList[exerciseName][k]["dateTime"] = workoutHistory[i].startTime;
+                exerciseList[exerciseName][k]["DateTime"] = workoutHistory[i].workout[j].DateTime;
                 exerciseList[exerciseName][k]["Reps"] = workoutHistory[i].workout[j].Reps;
                 exerciseList[exerciseName][k]["Weight"] = workoutHistory[i].workout[j].Weight;
                 
@@ -27,12 +108,15 @@ function displayExerciseHistory() {
         }
     }
     console.log(exerciseList);
+
+    return exerciseList;
 }
 
 function findKey(inputObject, item) {
     for (key in inputObject) {
         if (key === item) {
-            return true
+            console.log(key);
+            return key
         }
     }
     return false;
@@ -41,10 +125,9 @@ function findKey(inputObject, item) {
 function displayWorkoutHistory() {
     let workoutHistory = JSON.parse(localStorage.getItem("workoutHistory"));
     //console.log(workoutHistory);
+    let historyPage = document.getElementById("page_3");
 
     if (workoutHistory !== null) {      
-        let historyPage = document.getElementById("page_3");
-
         while (historyPage.firstChild) {
            historyPage.removeChild(historyPage.firstChild);
         }
@@ -76,6 +159,14 @@ function displayWorkoutHistory() {
             
             historyPage.appendChild(newDiv);
         }
+    } else {
+        while (historyPage.firstChild) {
+           historyPage.removeChild(historyPage.firstChild);
+        }
+        let newPara = document.createElement("P");
+        let newText = document.createTextNode("Complete a workout to make history!");
+        newPara.appendChild(newText);
+        historyPage.appendChild(newPara);
     }
 }
 

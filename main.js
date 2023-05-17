@@ -133,6 +133,7 @@ function switchToExerciseScreen(selectedExercises) {
     selectExerciseDiv.style.display = 'none';
     endWorkoutButton.style.display = 'none';
     createExerciseScreen(selectedExercises);
+    displayExerciseHistory(selectedExercises);
 }
 
 function endWorkout() {
@@ -149,11 +150,12 @@ function endWorkout() {
     console.log(durationSeconds);
 
     localSaveWorkoutHistory(workout, startTime, durationSeconds);
-    displayWorkoutHistory();
     
     workout = [];
     
     createRecord(workout);
+    endWorkoutButton.setAttribute("disabled", true);
+    displayWorkoutHistory()
 
     //stravaUpload(workoutString, startTime, durationSeconds);
     
@@ -544,9 +546,12 @@ function saveSet() {
     if (reps < 1) {
         alert("Please enter at least one rep");
     } else {
-        workout.push({Exercise: exercise,
-                      Reps: reps,
-                      Weight: weight});
+        workout.push({
+            Exercise: exercise,
+            Reps: reps,
+            Weight: weight,
+            DateTime: Date.now()
+        });
         console.log(workout);
         localStorage.setItem("workout_string", JSON.stringify(workout));
         let recordDiv = createRecord(workout);
@@ -557,6 +562,8 @@ function saveSet() {
 
 function completedExercises(event) {
     localStorage.removeItem("currentExercises");
+    displayWorkoutHistory();
+    
     let parentDiv = event.target.parentNode;
     selectExerciseDiv.style.display = 'inline-block';
     endWorkoutButton.style.display = 'inline-block';

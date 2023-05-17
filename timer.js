@@ -13,6 +13,9 @@ decrement.addEventListener("pointerdown", startDecrement);
 increment.addEventListener("pointerup", stopIncDecrement);
 decrement.addEventListener("pointerup", stopIncDecrement);
 
+increment.addEventListener("pointerleave", stopIncDecrement);
+decrement.addEventListener("pointerleave", stopIncDecrement);
+
 var intervalId;
 var currentDurationSeconds;
 var timerRunning;
@@ -24,6 +27,11 @@ function checkForRunningTimer() {
         currentDurationSeconds = localStorage.getItem("currentDurationSeconds");
         timerRunning = true;
         intervalId = setInterval(countdown, 100, countdownStart, currentDurationSeconds);
+    } else {
+        let timerSetting = localStorage.getItem("timerSetting");
+        if (timerSetting !== null) {
+            displayTimer(timerSetting);
+        }
     }
 }
 
@@ -90,19 +98,30 @@ function startDecrement() {
 function stopIncDecrement() {
     if (!timerRunning) {
         clearInterval(intervalId);
+        currentDurationSeconds = getCurrentDurationSeconds();
+        localStorage.setItem("timerSetting", currentDurationSeconds);
     }
 }
 
 
 function incrementTimer() {
-    currentDurationSeconds = currentDurationSeconds + 1;
-    displayTimer(currentDurationSeconds)
+    if (currentDurationSeconds < 3599) {
+        currentDurationSeconds = currentDurationSeconds + 1;
+        displayTimer(currentDurationSeconds)
+    } else {
+        stopIncDecrement();
+    }
+
 }
 
 
 function decrementTimer() {
-    currentDurationSeconds = currentDurationSeconds - 1;
-    displayTimer(currentDurationSeconds)
+    if (currentDurationSeconds > 0) {
+        currentDurationSeconds = currentDurationSeconds - 1;
+        displayTimer(currentDurationSeconds)
+    } else {
+        stopIncDecrement();
+    }
 }
 
 function displayTimer(currentDurationSeconds) {
