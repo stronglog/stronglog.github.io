@@ -55,16 +55,19 @@ function windowResized() {
 
 function checkWindowHeight() {
     let targetTab = localStorage.getItem("tabNumber");
-    let targetPageId = "page_"+targetTab;
+    let targetPageId;
+    if (targetTab === null) {
+        targetPageId = "page_"+1;
+    } else {
+        targetPageId = "page_"+targetTab;
+    }
 
-    if (targetTab !== null) {
-        let targetPage = document.getElementById(targetPageId);
+    let targetPage = document.getElementById(targetPageId);
         
-        if (targetPage.scrollHeight > targetPage.clientHeight) {
-            targetPage.style.overflowY = "scroll";
-        } else {
-            targetPage.style.overflowY = "hidden";
-        }
+    if (targetPage.scrollHeight > targetPage.clientHeight) {
+        targetPage.style.overflowY = "scroll";
+    } else {
+        targetPage.style.overflowY = "hidden";
     }
 }
 

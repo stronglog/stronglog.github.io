@@ -39,6 +39,10 @@
   height: calc(100vh - 172px);
 }
 
+#page_1 {
+  display: block; 
+}
+
 #page_2 {
     display: block;
 }
@@ -46,6 +50,18 @@
 #page_3 {
   display: block; 
 }
+
+@media(hover: hover) and (pointer: fine) {
+    #exercise_list li:hover {
+        background: #555;
+    }
+}
+
+
+#exercise_list {
+  cursor: pointer;
+}
+
 
 .slides {
   display: flex;

@@ -23,7 +23,9 @@
             <div id="slides_container" class="slides">
                 
                 <div id="page_1">
-                    <p>Add exercises to workout</p>
+                    <input type="text" id="search_string" onkeyup="filterList()" placeholder="Search for exercises...">
+                    <ul id="exercise_list">
+                    </ul>
                 </div>
                 
                 <div id="page_2">
@@ -94,10 +96,11 @@
             <button id="cancel">Cancel</button>
             <button id="upload">Upload</button>
         </div>
-        
-        <script src="main.js"></script>
+
+        <script src="add_exercises.js"></script>
         <script src="timer.js"></script>
         <script src="layout.js"></script>
         <script src="history.js"></script>
+        <script src="main.js"></script>
     </body>
 </html>

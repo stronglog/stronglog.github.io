@@ -5,6 +5,8 @@ endWorkoutButton.addEventListener("click", endWorkout);
 //checks when page is loaded
 document.addEventListener("DOMContentLoaded", function() {
     displayWorkoutHistory();
+    generateExerciseList();
+    checkWindowHeight()
 
     
     //check if we are mid-strava upload

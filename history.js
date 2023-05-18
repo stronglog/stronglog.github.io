@@ -57,7 +57,7 @@ function displayExerciseHistory(selectedExercises) {
                 
                 let newItem = document.createElement("LI");
                 
-                console.log(exerciseHistory[key][j]);
+                //console.log(exerciseHistory[key][j]);
                 
                 let localDateTime = createLocalDateTimeString(exerciseHistory[key][j].DateTime);
                 
@@ -84,7 +84,7 @@ function displayExerciseHistory(selectedExercises) {
 
 function createExerciseHistory() {
     let workoutHistory = JSON.parse(localStorage.getItem("workoutHistory"));
-    console.log(workoutHistory);
+    //console.log(workoutHistory);
 
     let exerciseList = {};
 
@@ -95,7 +95,7 @@ function createExerciseHistory() {
                 let keyPresent = findKey(exerciseList, exerciseName);
                 if (keyPresent === false) {
                     exerciseList[exerciseName] = [];
-                    console.log(exerciseList);
+                    //console.log(exerciseList);
                 }
                 let k = exerciseList[exerciseName].length;
                 //console.log(k);
@@ -115,7 +115,7 @@ function createExerciseHistory() {
 function findKey(inputObject, item) {
     for (key in inputObject) {
         if (key === item) {
-            console.log(key);
+            //console.log(key);
             return key
         }
     }
