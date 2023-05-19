@@ -30,22 +30,17 @@
                 
                 <div id="page_2">
                     <div id="select_exercise">
-                        <label>Please select one or more exercises (select more than one for a superset or giant set):
+                        <label>Go to the Add Exercises tab to select some exercises:
                             <select id="exercises" name="exercise" multiple size="8">
-                                <option value="deadlift">Deadlift</option>
-                                <option value="dbpress">DB Press</option>
-                                <option value="press">Press</option>
-                                <option value="frontsquat">Front Squat</option>
-                                <option value="pullups">Pull Ups</option>
-                                <option value="pushups">Push Ups</option>
-                                <option value="bwrows">Bodyweight Rows</option>
-                                <option value="dbrows">DB Rows</option>
+                                <option disabled="true">--Add Exercises--</option>
                             </select>
                         </label>
-
-                        <button id="begin_exercise">Begin Exercise</button>
+                    </div>
+                    <div id="workout_buttons">
+                        <button id="begin_exercise" disabled="true">Begin Exercise</button>
+                        <button id="go_add_exercises">Add Exercises</button>
+                        <button id="remove_exercise" disabled="true">Remove Exercise</button>
                         <button id="end_workout" disabled="true">End Workout</button>
-                        
                     </div>
                     
                     <div id="exercise_details">

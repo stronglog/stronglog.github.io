@@ -1,3 +1,107 @@
+let removeExerciseButton = document.getElementById("remove_exercise");
+removeExerciseButton.addEventListener("click", removeExercise);
+
+function generateWorkoutExercises() {
+    let workoutExercises = JSON.parse(localStorage.getItem("workout_exercises"));
+    if (workoutExercises !== null) {
+        let selection = document.getElementById("exercises");
+        while (selection.firstChild) {
+            selection.removeChild(selection.firstChild);
+        }
+        for (let i=0; i<workoutExercises.length; i++) {
+            let newOption = document.createElement("OPTION");
+            newOption.innerText = workoutExercises[i];
+            selection.appendChild(newOption);
+            
+            let removeExerciseButton = document.getElementById("remove_exercise");
+            removeExerciseButton.removeAttribute("disabled");
+            
+            let beginExercise = document.getElementById("begin_exercise");
+            beginExercise.removeAttribute("disabled");
+            
+        }       
+    }
+}
+
+
+
+
+
+function removeExercise() {
+    let selection = document.getElementById("exercises");
+    let collection = Array.from(selection.selectedOptions);
+    console.log(collection);
+
+    for (let item of collection) {
+        console.log(item);
+        selection.removeChild(item);
+
+        let workoutExercises = JSON.parse(localStorage.getItem("workout_exercises"));
+        let index = workoutExercises.indexOf(item.innerText);
+        workoutExercises.splice(index, 1);
+        localStorage.setItem("workout_exercises", JSON.stringify(workoutExercises));
+        
+        
+    }
+    if (selection.children.length === 0) {
+        //console.log("empty");
+        let newOption = document.createElement("OPTION");
+        newOption.innerText = "--Add Exercises--";
+        newOption.setAttribute("disabled", true);
+        selection.appendChild(newOption);
+        localStorage.removeItem("workout_exercises")
+
+        let removeExerciseButton = document.getElementById("remove_exercise");
+        removeExerciseButton.setAttribute("disabled", true);
+            
+        let beginExercise = document.getElementById("begin_exercise");
+        beginExercise.setAttribute("disabled", true);
+        
+    }
+
+}
+
+
+let goAddExercisesButton = document.getElementById("go_add_exercises");
+goAddExercisesButton.addEventListener("click", goToPage1);
+
+function goToPage1() {
+    let targetTab = document.getElementById("tab_1");
+    let allTabs = targetTab.parentElement.children;
+
+    console.log(allTabs);
+    
+    Array.from(allTabs).forEach(function (currentItem, currentIndex) {
+        console.log(currentItem);
+        currentItem.style.background = "#aaa"
+        currentItem.style.borderBottom = "none";
+    });
+    
+    targetTab.style.background = "#eee";
+    targetTab.style.borderBottom = "solid black 2px";
+
+    console.log(targetTab.id)
+    let tabNumber = targetTab.id.split("_")[1];
+
+    localStorage.setItem("tabNumber", tabNumber);
+    
+    let targetPageId = "page_"+tabNumber;
+    console.log(targetPageId);
+    
+    let targetPage = document.getElementById(targetPageId);
+    console.log(targetPage);
+    
+    if (targetPage.scrollHeight > targetPage.clientHeight) {
+        //console.log("overflow");
+        targetPage.style.overflowY = "scroll";
+    } else {
+        //console.log("no overflow");
+        targetPage.style.overflowY = "hidden";
+    }
+
+    targetPage.scrollIntoView();
+}
+
 function filterList() {
     let addExerciseButton = document.getElementById("add_exercise")
 
@@ -51,7 +155,7 @@ function addExerciseToList() {
 
     let list = document.getElementById("exercise_list");
 
-     while (list.firstChild) {
+    while (list.firstChild) {
         list.removeChild(list.firstChild);
     }
 
@@ -65,12 +169,48 @@ function addExerciseToList() {
 }
 
 
+function addExerciseToWorkout() {
+    console.log(event.target.innerText);
+    let workout = document.getElementById("exercises");
 
+    let exercisePresent = false;
+
+    for (const child of  workout.children) {
+        if (child.innerText === event.target.innerText) {
+            exercisePresent = true;
+        }
+        if (child.innerText === "--Add Exercises--") {
+            console.log("remove");
+            workout.removeChild(child);
+            
+            let beginExercise = document.getElementById("begin_exercise");
+            beginExercise.removeAttribute("disabled");
+
+            let removeExercise = document.getElementById("remove_exercise");
+            removeExercise.removeAttribute("disabled");
+            
+        }
+    }
+    if (!exercisePresent) {
+        let workoutExercises = JSON.parse(localStorage.getItem("workout_exercises"));
+        if (workoutExercises === null) {
+            workoutExercises = [];
+        }
+        workoutExercises.push(event.target.innerText)
+        localStorage.setItem("workout_exercises", JSON.stringify(workoutExercises));
+
+        let newOption = document.createElement("OPTION");
+        newOption.innerText = event.target.innerText;
+        workout.appendChild(newOption);
+    }
+
+    
+}
 
 
 function generateExerciseList() {
     let exerciseList = JSON.parse(localStorage.getItem("exercise_list"));
-    console.log(exerciseList);
+    //console.log(exerciseList);
     if (exerciseList === null) {
         exerciseList = [
             "Ab Wheel Rollout",
@@ -127,6 +267,8 @@ function generateExerciseList() {
     for (let i=0; i<exerciseList.length; i++) {
         let newItem = document.createElement("LI");
         newItem.innerText = exerciseList[i];
+        newItem.addEventListener("click", addExerciseToWorkout);
         list.appendChild(newItem);
+        
     }
 }

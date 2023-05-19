@@ -120,14 +120,14 @@ tab2.addEventListener("click", selectTab);
 let tab3 = document.getElementById("tab_3");
 tab3.addEventListener("click", selectTab);
 
-function selectTab() {
+function selectTab() {    
     let targetTab = event.target;
     let allTabs = targetTab.parentElement.children;
 
-    //console.log(allTabs);
+    console.log(allTabs);
     
     Array.from(allTabs).forEach(function (currentItem, currentIndex) {
-        //console.log(currentItem);
+        console.log(currentItem);
         currentItem.style.background = "#aaa"
         currentItem.style.borderBottom = "none";
     });
@@ -135,16 +135,16 @@ function selectTab() {
     targetTab.style.background = "#eee";
     targetTab.style.borderBottom = "solid black 2px";
 
-    //console.log(targetTab.id)
+    console.log(targetTab.id)
     let tabNumber = targetTab.id.split("_")[1];
 
     localStorage.setItem("tabNumber", tabNumber);
     
     let targetPageId = "page_"+tabNumber;
-    //console.log(targetPageId);
+    console.log(targetPageId);
     
     let targetPage = document.getElementById(targetPageId);
-    //console.log(targetPage);
+    console.log(targetPage);
     
     if (targetPage.scrollHeight > targetPage.clientHeight) {
         //console.log("overflow");

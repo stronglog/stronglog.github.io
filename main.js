@@ -6,6 +6,7 @@ endWorkoutButton.addEventListener("click", endWorkout);
 document.addEventListener("DOMContentLoaded", function() {
     displayWorkoutHistory();
     generateExerciseList();
+    generateWorkoutExercises();
     checkWindowHeight()
 
     
@@ -133,7 +134,8 @@ function startExercise() {
 
 function switchToExerciseScreen(selectedExercises) {
     selectExerciseDiv.style.display = 'none';
-    endWorkoutButton.style.display = 'none';
+    let workoutButtons = document.getElementById("workout_buttons");
+    workoutButtons.style.display = 'none';
     createExerciseScreen(selectedExercises);
     displayExerciseHistory(selectedExercises);
 }
@@ -568,7 +570,10 @@ function completedExercises(event) {
     
     let parentDiv = event.target.parentNode;
     selectExerciseDiv.style.display = 'inline-block';
-    endWorkoutButton.style.display = 'inline-block';
+    
+    let workoutButtons = document.getElementById("workout_buttons");
+    workoutButtons.style.display = 'inline-block';
+
     if (workout.length > 0) {
         console.log(workout.length);
         endWorkoutButton.removeAttribute("disabled");
