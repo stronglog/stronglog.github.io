@@ -63,10 +63,16 @@ function removeExercise() {
 
 
 let goAddExercisesButton = document.getElementById("go_add_exercises");
-goAddExercisesButton.addEventListener("click", goToPage1);
+goAddExercisesButton.addEventListener("click", goToAddExercisesPage);
 
-function goToPage1() {
-    let targetTab = document.getElementById("tab_1");
+
+function goToAddExercisesPage() {
+    goToPage(1);
+}
+
+
+function goToPage(pageNumber) {
+    let targetTab = document.getElementById("tab_"+pageNumber);
     let allTabs = targetTab.parentElement.children;
 
     console.log(allTabs);
@@ -80,12 +86,12 @@ function goToPage1() {
     targetTab.style.background = "#eee";
     targetTab.style.borderBottom = "solid black 2px";
 
-    console.log(targetTab.id)
-    let tabNumber = targetTab.id.split("_")[1];
+    //console.log(targetTab.id)
+    //let tabNumber = targetTab.id.split("_")[1];
 
-    localStorage.setItem("tabNumber", tabNumber);
+    localStorage.setItem("tabNumber", pageNumber);
     
-    let targetPageId = "page_"+tabNumber;
+    let targetPageId = "page_"+pageNumber;
     console.log(targetPageId);
     
     let targetPage = document.getElementById(targetPageId);
@@ -101,6 +107,8 @@ function goToPage1() {
 
     targetPage.scrollIntoView();
 }
+
+
 
 function filterList() {
     let addExerciseButton = document.getElementById("add_exercise")
@@ -150,7 +158,8 @@ function addExerciseToList() {
     let exerciseName = searchString.value;
     
     let exerciseList = JSON.parse(localStorage.getItem("exercise_list"));
-    exerciseList.unshift(exerciseName);
+    exerciseList.push(exerciseName);
+    exerciseList.sort();
     localStorage.setItem("exercise_list", JSON.stringify(exerciseList));
 
     let list = document.getElementById("exercise_list");
@@ -180,7 +189,6 @@ function addExerciseToWorkout() {
             exercisePresent = true;
         }
         if (child.innerText === "--Add Exercises--") {
-            console.log("remove");
             workout.removeChild(child);
             
             let beginExercise = document.getElementById("begin_exercise");
@@ -264,11 +272,40 @@ function generateExerciseList() {
     
     let list = document.getElementById("exercise_list");
 
+    while (list.firstChild) {
+        list.removeChild(list.firstChild);
+    }
+
     for (let i=0; i<exerciseList.length; i++) {
         let newItem = document.createElement("LI");
-        newItem.innerText = exerciseList[i];
+        newItem.innerHTML = exerciseList[i] + `<svg xmlns="http://www.w3.org/2000/svg" onclick="deleteExercise()" width="1em" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                    <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"/>
+                                </svg>`;
         newItem.addEventListener("click", addExerciseToWorkout);
         list.appendChild(newItem);
         
     }
+}
+
+function deleteExercise() {
+    event.stopPropagation();
+    //console.log(event.target);
+    var listItem;
+    if (event.target.tagName === "path") {
+        listItem = event.target.parentElement.parentElement;
+    } else {
+        listItem = event.target.parentElement;
+    }
+    console.log(listItem);
+
+    let exerciseList = JSON.parse(localStorage.getItem("exercise_list"));
+    console.log(exerciseList);
+    let index = exerciseList.indexOf(listItem.innerText);
+    console.log(index);
+    
+    exerciseList.splice(index, 1);
+    localStorage.setItem("exercise_list", JSON.stringify(exerciseList));
+
+    generateExerciseList();
+    
 }

@@ -101,7 +101,7 @@ let stravaUploadDiv = document.getElementById("upload_screen");
 stravaUploadDiv.style.display = 'none';
 
 function startExercise() {
-    if (localStorage.getItem("start_time") === null) {
+    if (localStorage.getItem("start_time") === null || workout.length === 0 ) {
         let startTime = Date.now();
         localStorage.setItem("start_time", startTime);
     }
@@ -386,6 +386,10 @@ function createRecord(workout) {
     }
 
     if (workout.length > 0) {
+        //check for currently selected units before creating display
+        //...to do
+
+        
         newHeading = document.createElement("H3");
         content = document.createTextNode("Sets Completed");
         newHeading.appendChild(content);
@@ -578,7 +582,8 @@ function completedExercises(event) {
         console.log(workout.length);
         endWorkoutButton.removeAttribute("disabled");
         let recordDiv = createRecord(workout);
-        selectExerciseDiv.appendChild(recordDiv);
+        let exerciseRecord = document.getElementById("exercise_record");
+        exerciseRecord.appendChild(recordDiv);
         checkWindowHeight()
         
     }
@@ -625,6 +630,9 @@ function createExerciseScreen(selectedExercises) {
         newWeightInput.setAttribute("type", "number");
         newWeightInput.setAttribute("class", "fourWide");
         newDiv.appendChild(newWeightInput);
+
+        let newText = document.createTextNode("kg ");
+        newDiv.appendChild(newText);
 
         newSaveSetButton = document.createElement("BUTTON");
         newSaveSetButton.setAttribute("id", "save_set");
