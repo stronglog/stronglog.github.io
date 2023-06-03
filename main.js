@@ -9,6 +9,18 @@ document.addEventListener("DOMContentLoaded", function() {
     generateWorkoutExercises();
     checkWindowHeight()
 
+    //retrieve or set default units
+    units = JSON.parse(localStorage.getItem("units"));
+    console.log(units);
+    if (units === null) {
+        units = {};
+        units.name = "kg ";
+        units.factor = 1;
+    } else {
+        let radio = document.getElementById(units.name);
+        radio.setAttribute("checked", true);
+    }
+
     
     //check if we are mid-strava upload
     var urlString = window.location;
@@ -389,6 +401,7 @@ function createRecord(workout) {
         //check for currently selected units before creating display
         //...to do
 
+        console.log(workout);
         
         newHeading = document.createElement("H3");
         content = document.createTextNode("Sets Completed");
@@ -403,27 +416,29 @@ function createRecord(workout) {
             const array = new Uint16Array(1);
             self.crypto.getRandomValues(array);
             //console.log(array);
+
             
             newItem.setAttribute("id", "set" + array[0]);
             if (workout[i].Reps > 1) {
                 if (workout[i].Weight > 0) {
-                    newItem.innerText = workout[i].Exercise + " " + workout[i].Reps + " reps at " + workout[i].Weight + "kg ";
+                    newItem.innerText = workout[i].Exercise + " " + workout[i].Reps + " reps at " + Math.round((workout[i].Weight*units.factor)*100)/100 + units.name;
                 } else {
                     newItem.innerText = workout[i].Exercise + " " + workout[i].Reps + " reps ";
                 }
             } else {
                 if (workout[i].Weight > 0) {
-                    newItem.innerText = workout[i].Exercise + " " + workout[i].Reps + " rep at " + workout[i].Weight + "kg ";
+                    newItem.innerText = workout[i].Exercise + " " + workout[i].Reps + " rep at " + Math.round((workout[i].Weight*units.factor)*100)/100 + units.name;
                 } else {
                     newItem.innerText = workout[i].Exercise + " " + workout[i].Reps + " rep ";
                 }
             }
-            newItem.innerHTML = newItem.innerHTML + `<svg xmlns="http://www.w3.org/2000/svg" onclick="editSet()" width="1em" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+            newItem.innerHTML = newItem.innerHTML + ` <svg xmlns="http://www.w3.org/2000/svg" onclick="editSet()" width="1em" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
                                     <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
-                                </svg>` + `<svg xmlns="http://www.w3.org/2000/svg" onclick="deleteSet()" width="1em" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                </svg>` + ` <svg xmlns="http://www.w3.org/2000/svg" onclick="deleteSet()" width="1em" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
                                     <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"/>
                                 </svg>`
             newList.appendChild(newItem);
+            console.log(newList);
         }
         recordDiv.appendChild(newList);
     }
@@ -451,7 +466,7 @@ function acceptEdit() {
 
     workout[index].Exercise = newName;
     workout[index].Reps = newReps;
-    workout[index].Weight = newWeight;
+    workout[index].Weight = Math.round((newWeight / units.factor)*100)/100;
 
     createRecord(workout);
     checkWindowHeight()
@@ -505,12 +520,12 @@ function editSet() {
     
     listItem.innerHTML = '<input type="text" id="edit_name" value="' + name + '" size="' + name.length + '">' +
         '<input type="number" id="edit_reps" value="' + reps + '" class="fourWide">' + "Reps at " +
-        '<input type="number" id="edit_weight" value="' + weight + '" class="fourWide">' + "kg " +
+        '<input type="number" id="edit_weight" value="' + weight*units.factor + '" class="fourWide">' + units.name +
         
-        `<svg xmlns="http://www.w3.org/2000/svg" onclick="acceptEdit()" width="1em" viewBox="0 0 16 16">
+        ` <svg xmlns="http://www.w3.org/2000/svg" onclick="acceptEdit()" width="1em" viewBox="0 0 16 16">
         	<path d="M2 10 L6 14 L14 3" stroke="currentColor" stroke-width="4" fill="none"/> 
         </svg>`
-        + `<svg xmlns="http://www.w3.org/2000/svg" onclick="discardEdit()" width="1em" viewBox="0 0 16 16">
+        + ` <svg xmlns="http://www.w3.org/2000/svg" onclick="discardEdit()" width="1em" viewBox="0 0 16 16">
         	<path d="M4 4 L14 14" stroke="currentColor" stroke-width="4" fill="none"/>
             <path d="M4 14 L14 4" stroke="currentColor" stroke-width="4" fill="none"/> 
         </svg>`
@@ -547,7 +562,7 @@ function saveSet() {
     let exercisingDiv = document.getElementById("exercise_details");
     let exercise = event.target.parentNode.className;
     let reps = event.target.parentNode.querySelector("#reps").value;
-    let weight = event.target.parentNode.querySelector("#weight").value;
+    let weight = event.target.parentNode.querySelector("#weight").value  / units.factor;
     console.log(exercise);
     console.log(reps);
     console.log(weight);
@@ -595,6 +610,11 @@ function completedExercises(event) {
 
 function createExerciseScreen(selectedExercises) {
     let exercisingDiv = document.getElementById("exercise_details");
+
+    while (exercisingDiv.firstChild) {
+        exercisingDiv.removeChild(exercisingDiv.firstChild);
+    }
+    
     let newHeading = "";
     let newRepsLabel = "";
     let newWeightLabel = "";
@@ -631,7 +651,7 @@ function createExerciseScreen(selectedExercises) {
         newWeightInput.setAttribute("class", "fourWide");
         newDiv.appendChild(newWeightInput);
 
-        let newText = document.createTextNode("kg ");
+        let newText = document.createTextNode(units.name + " ");
         newDiv.appendChild(newText);
 
         newSaveSetButton = document.createElement("BUTTON");
