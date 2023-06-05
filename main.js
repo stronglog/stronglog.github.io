@@ -175,8 +175,9 @@ function endWorkout() {
     endWorkoutButton.setAttribute("disabled", true);
     displayWorkoutHistory()
 
-    //stravaUpload(workoutString, startTime, durationSeconds);
-    
+    if (window.confirm("Upload this workout to Strava?")) {
+        stravaUpload(workoutString, startTime, durationSeconds);
+    }
 }
 
 
