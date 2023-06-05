@@ -16,11 +16,15 @@ function changeUnits() {
         units.factor = 1;
     }
     console.log(units);
-    localStorage.setItem("units", JSON.stringify(units))
+    localStorage.setItem("units", JSON.stringify(units));
 
     let currentExercises = JSON.parse(localStorage.getItem("currentExercises"));
     if (currentExercises !== null) {
-        createExerciseScreen(currentExercises)
+        createExerciseScreen(currentExercises);
+        displayExerciseHistory(currentExercises);
+    } else {
+        console.log("no workout in progress");
+        displayWorkoutHistory();
     }
 
     console.log(workout);

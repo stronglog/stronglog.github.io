@@ -63,13 +63,15 @@ function displayExerciseHistory(selectedExercises) {
                 
                 if (exerciseHistory[key][j].Reps > 1) {
                     if (exerciseHistory[key][j].Weight > 0) {
-                        newItem.innerText = localDateTime + " " + exerciseHistory[key][j].Reps + " reps at " + exerciseHistory[key][j].Weight + "kg ";
+                        let weight = Math.round(((exerciseHistory[key][j].Weight)*units.factor)*100)/100;
+                        newItem.innerText = localDateTime + " " + exerciseHistory[key][j].Reps + " reps at " + weight + units.name;
                     } else {
                         newItem.innerText = localDateTime + " " + exerciseHistory[key][j].Reps + " reps ";
                     }
                 } else {
                     if (exerciseHistory[key][j].Weight > 0) {
-                        newItem.innerText = localDateTime + " " + exerciseHistory[key][j].Reps + " rep at " + exerciseHistory[key][j].Weight + "kg ";
+                        let weight = Math.round((exerciseHistory[key][j].Weight*units.factor)*100)/100;
+                        newItem.innerText = localDateTime + " " + exerciseHistory[key][j].Reps + " rep at " + weight + units.name;
                     } else {
                         newItem.innerText = localDateTime + " " + exerciseHistory[key][j].Reps + " rep ";
                     }
@@ -218,6 +220,7 @@ function createTitle(startTime) {
 }
 
 function createList(workout) {
+    console.log("hello world");
     newList = document.createElement("OL");    
         
     for (let i=0; i<workout.length; i++) {
@@ -225,13 +228,17 @@ function createList(workout) {
 
         if (workout[i].Reps > 1) {
             if (workout[i].Weight > 0) {
-                newItem.innerText = workout[i].Exercise + " " + workout[i].Reps + " reps at " + workout[i].Weight + "kg ";
+                console.log(workout[i].Weight);
+                console.log(units.factor);
+                let weight = Math.round(((workout[i].Weight)*units.factor)*100)/100;
+                newItem.innerText = workout[i].Exercise + " " + workout[i].Reps + " reps at " + weight + units.name;
             } else {
                 newItem.innerText = workout[i].Exercise + " " + workout[i].Reps + " reps ";
             }
         } else {
             if (workout[i].Weight > 0) {
-                newItem.innerText = workout[i].Exercise + " " + workout[i].Reps + " rep at " + workout[i].Weight + "kg ";
+                let weight = Math.round((workout[i].Weight*units.factor)*100)/100;
+                newItem.innerText = workout[i].Exercise + " " + workout[i].Reps + " rep at " + weight + units.name;
             } else {
                 newItem.innerText = workout[i].Exercise + " " + workout[i].Reps + " rep ";
             }
