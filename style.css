@@ -36,7 +36,7 @@
 }
 
 .main {
-  height: calc(100vh - 172px);
+  height: calc(100svh - 172px);
 }
 
 #page_1 {
@@ -99,7 +99,7 @@
 html, body {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 100svh;
   margin: 0;
   padding: 0;
 }
