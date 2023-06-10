@@ -1,5 +1,4 @@
 
-//createExerciseHistory();
 
 function createLocalTimeString(timeStampMilli) {
     //console.log(timeStampMilli);
