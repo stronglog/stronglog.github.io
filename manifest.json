@@ -1,12 +1,12 @@
 {
-  "name": "Strong Log",
-  "start_url": "/",
-  "icons": [
-    {
-      "src": "icon.webp",
-      "sizes": "48x48",
-      "type": "image/webp"
-    }
-  ],
-  "display": "standalone"
+    "name": "Strong Log",
+    "start_url": "../index.html",
+    "icons": [
+        {
+            "src": "icons/512.png",
+            "type": "image/png",
+            "sizes": "512x512"
+        }
+    ],
+    "display": "standalone"
 }
