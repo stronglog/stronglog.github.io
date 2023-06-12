@@ -10,5 +10,11 @@
     ],
     "display": "standalone,
     "description": "Strength Workout Log, record exercise, weight, reps and sets. Supports Strava upload."
-    
+    "screenshots" : [{
+        "src": "icons/screenshot.png",
+        "sizes": "410x800",
+        "type": "image/png",
+        "platform": "narrow",
+        "label": "Strong Log Add Exercise Screen"
+    }]
 }
