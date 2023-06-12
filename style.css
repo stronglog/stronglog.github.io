@@ -2,6 +2,9 @@
   box-sizing: border-box;
 }
 
+
+
+
 .slider {
   width: 100%;
   overflow: hidden;
@@ -109,4 +112,12 @@ body {
   font-family: sans-serif;
   color: #F5F7F4;
   background:#030302
+}
+
+#footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  font-size: 1.3em;
+  
 }
